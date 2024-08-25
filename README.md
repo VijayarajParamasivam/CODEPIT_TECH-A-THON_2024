@@ -38,12 +38,11 @@ A comprehensive API for real-time stock market data with predictive analytics.
 1. **Start the API Server:**
 
     ```sh
-    uvicorn app.main:app --reload
+    uvicorn app.main:app --reload --port 8001
     ```
 
 2. **Access Documentation:**
    - Swagger UI: `http://127.0.0.1:8001/docs`
-   - ReDoc: `http://127.0.0.1:8001/redoc`
 
 ## Authentication
 
