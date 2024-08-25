@@ -57,7 +57,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.patch("/user/subscription")
+"""@app.patch("/user/subscription")
 async def switch_subscription(
     new_subscription: str = Query(..., description="New subscription level"),
     token: str = Depends(oauth2_scheme),
@@ -89,7 +89,7 @@ async def switch_subscription(
     user.subscription_level = new_subscription
     db.add(user)
     await db.commit()
-    return {"message": f"Subscription level changed to {new_subscription}"}
+    return {"message": f"Subscription level changed to {new_subscription}"}"""
 
 @app.delete("/user/delete")
 async def delete_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
