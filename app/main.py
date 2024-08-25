@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query, HTTPException, Depends
+from fastapi import FastAPI, Query, HTTPException, Depends, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Optional
 import pandas as pd
@@ -15,12 +15,21 @@ from sqlalchemy.orm import Session
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-
-
-
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from cachetools import TTLCache, cached
+import app.predictor as pred
 
 app = FastAPI()
 database.init_db()
+cache = TTLCache(maxsize=100, ttl=300)
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+
+
+@cached(cache)
+def fetch_cached_stock_data(symbol: str, start_date: Optional[str], end_date: Optional[str], frequency: str) -> pd.DataFrame:
+    return fetch_stock_data(symbol, start_date, end_date, frequency)
 
 class UserCreate(BaseModel):
     username: str
@@ -120,6 +129,7 @@ def convert_to_dict(data: pd.DataFrame) -> dict:
     return data.to_dict(orient="index")
 
 @app.get("/stocks/{symbol}/historical")
+@limiter.limit("50/day")
 async def get_historical_data(
     symbol: str,
     start_date: Optional[str] = Query(None),
@@ -127,7 +137,8 @@ async def get_historical_data(
     frequency: Optional[str] = Query('daily'),
     format: Optional[str] = Query('json'),
     token: str = Depends(oauth2_scheme), 
-    db: Session = Depends(database.get_db)):
+    db: Session = Depends(database.get_db),
+    request: Request = None):
 
     credentials_exception = HTTPException(
         status_code=401, detail="Could not validate credentials"
@@ -167,8 +178,10 @@ async def get_historical_data(
     
     
 @app.get("/stocks/{symbol}/current")
+@limiter.limit("50/day")
 async def get_current_price(symbol: str,token: str = Depends(oauth2_scheme), 
-    db: Session = Depends(database.get_db)):
+    db: Session = Depends(database.get_db),
+    request: Request = None):
 
     credentials_exception = HTTPException(
         status_code=401, detail="Could not validate credentials"
@@ -194,10 +207,25 @@ async def get_current_price(symbol: str,token: str = Depends(oauth2_scheme),
         raise credentials_exception
     
 
-@app.get("/stocks/{symbol}/predict")
-def predict_stock(symbol: str, periods: int = 5):
+@app.get("/predict/{symbol}")
+@limiter.limit("10/day")
+async def predict_stock(symbol: str, periods: int = Query(15), token: str = Depends(oauth2_scheme),request: Request = None):
+    credentials_exception = HTTPException(
+        status_code=401, detail="Could not validate credentials"
+    )
+
     try:
-        forecast = predict_stock_price(symbol, periods)
-        return forecast
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except jwt.PyJWTError:
+        raise credentials_exception
+
+    try:
+        result = pred.predict_stock_price_with_test_data(symbol, periods)
+        if "error" in result:
+            raise HTTPException(status_code=400, detail=result["error"])
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
