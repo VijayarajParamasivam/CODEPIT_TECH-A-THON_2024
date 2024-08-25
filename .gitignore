@@ -1,0 +1,30 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.pyd
+C:\Users\vijay\Desktop\Techathon\StockMarketAPI\app\__pycache__\main.cpython-312.pyc
+# Virtual environment
+venv/
+.env/
+
+# Logs
+*.log
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# System files
+.DS_Store
+Thumbs.db
+test.db
+
+# Environment files
+.env
+.env.*
