@@ -17,7 +17,7 @@ A comprehensive API for real-time stock market data with predictive analytics.
 
     ```sh
     git clone https://github.com/VijayarajParamasivam/CODEPIT_TECH-A-THON_2024.git
-    cd <repository-directory>  As per wish
+    cd <repository-directory>
     ```
 
 2. **Create and Activate Virtual Environment:**
