@@ -17,6 +17,8 @@ A comprehensive API for real-time stock market data with predictive analytics.
 
     ```sh
     git clone https://github.com/VijayarajParamasivam/Stock-Market-API.git
+    ```
+    ```bash
     cd <repository-directory>
     ```
 
@@ -24,7 +26,9 @@ A comprehensive API for real-time stock market data with predictive analytics.
 
     ```sh
     python -m venv venv
-    source venv/bin/activate  # For Windows: venv\Scripts\activate
+    ```
+    ```sh
+    venv\Scripts\activate
     ```
 
 3. **Install Dependencies:**
