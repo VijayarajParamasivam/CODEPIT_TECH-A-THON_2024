@@ -16,8 +16,8 @@ A comprehensive API for real-time stock market data with predictive analytics.
     ```sh
     git clone https://github.com/VijayarajParamasivam/Stock-Market-API.git
     ```
-    ```bash
-    cd <repository-directory>
+    ```sh
+    cd Stock-Market-API
     ```
 
 2. **Create and Activate Virtual Environment:**
