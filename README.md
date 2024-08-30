@@ -1,4 +1,4 @@
-# CODEPIT_TECH-A-THON_2024
+# Stock-Market-API
 
 # Stock Market API
 
