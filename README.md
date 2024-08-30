@@ -1,7 +1,5 @@
 # Stock-Market-API
 
-# Stock Market API
-
 ## Overview
 A comprehensive API for real-time stock market data with predictive analytics. 
 
