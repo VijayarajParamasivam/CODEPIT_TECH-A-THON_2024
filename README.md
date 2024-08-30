@@ -16,7 +16,7 @@ A comprehensive API for real-time stock market data with predictive analytics.
 1. **Clone the Repository:**
 
     ```sh
-    git clone https://github.com/VijayarajParamasivam/CODEPIT_TECH-A-THON_2024.git
+    git clone https://github.com/VijayarajParamasivam/Stock-Market-API.git
     cd <repository-directory>
     ```
 
